@@ -5,7 +5,7 @@
   "main": "src/app.ts",
   "scripts": {
     "build": "tsc",
-    "start": "node ./dist/app.js",
+    "start": "yarn build && node ./dist/app.js",
     "dev": "nodemon",
     "format:check": "prettier --check .",
     "format:write": "prettier --write .",
@@ -42,5 +42,6 @@
     "eslint-config-prettier": "^9.1.0",
     "prettier": "^3.2.5",
     "ts-node-dev": "^2.0.0"
-  }
+  },
+  "packageManager": "^yarn@1.20.22"
 }
