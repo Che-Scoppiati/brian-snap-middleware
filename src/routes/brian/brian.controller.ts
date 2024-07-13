@@ -43,6 +43,7 @@ export async function fetchTransactionFromPrompt(req: Request, res: Response) {
 
     return res.status(200).json({
       status: "ok",
+      id: newTransaction.id,
       data: newTransaction.metadata,
     });
   } catch (error) {
