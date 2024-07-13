@@ -9,7 +9,6 @@ app.use(express.json({ limit: "10mb" }));
 app.use(cors());
 
 const port = env.PORT;
-const hostname = env.HOSTNAME;
 
 app.get("/ping", (req: Request, res: Response) => {
   res.send("pong");
@@ -18,6 +17,6 @@ app.get("/ping", (req: Request, res: Response) => {
 app.use("/brian", brianRouter);
 app.use("/tx", txRouter);
 
-app.listen(port, hostname, () => {
-  console.log(`Server is live at http://localhost:${port}`);
+app.listen(port, () => {
+  console.log(`Server is live at port ${port}`);
 });
