@@ -43,5 +43,5 @@
     "prettier": "^3.2.5",
     "ts-node-dev": "^2.0.0"
   },
-  "packageManager": "^yarn@1.20.22"
+  "packageManager": "yarn@1.22.22"
 }
