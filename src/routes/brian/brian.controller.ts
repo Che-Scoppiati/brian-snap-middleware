@@ -57,3 +57,40 @@ export async function fetchTransactionFromPrompt(req: Request, res: Response) {
     });
   }
 }
+
+export async function fetchKnowledgeBase(req: Request, res: Response) {
+  const { prompt, kb } = req.body;
+
+  logger.log(`received prompt: ${prompt} and kb: ${kb}`);
+  if (!prompt) {
+    return res.status(400).json({ message: "Prompt is required" });
+  }
+
+  const options = {
+    method: "POST",
+    url: `${BRIAN_BASE_URL}/knowledge`,
+    headers: {
+      "Content-Type": "application/json",
+      "X-Brian-Api-Key": BRIAN_API_KEY,
+    },
+    data: { prompt, kb },
+  };
+
+  try {
+    const { data } = await axios.request(options);
+
+    return res.status(200).json({
+      status: "ok",
+      data: data.result,
+    });
+  } catch (error) {
+    const errorMessage = getErrorMessage(error);
+    logger.error(`Error fetching knowledge base: ${errorMessage}`);
+    return res.status(500).json({
+      status: "nok",
+      error: {
+        message: errorMessage,
+      },
+    });
+  }
+}
