@@ -2,6 +2,10 @@ import axios, { Axios, AxiosError } from "axios";
 import { env } from "../../env";
 import { Request, Response } from "express";
 import { Logger } from "../../logger";
+import { saveTransaction } from "../../db/transaction";
+import { v4 as uuid } from "uuid";
+import { Transaction } from "@prisma/client";
+import { getErrorMessage } from "../../lib/utils";
 
 const BRIAN_BASE_URL = "https://api.brianknows.org/api/v0/agent";
 const BRIAN_API_KEY = env.BRIAN_API_KEY;
@@ -10,10 +14,12 @@ const logger = new Logger("brian");
 
 export async function fetchTransactionFromPrompt(req: Request, res: Response) {
   const { prompt, address, chainId } = req.body;
+
   logger.log(`received prompt: ${prompt} and address: ${address}`);
   if (!prompt || !address) {
     return res.status(400).json({ message: "Prompt and address are required" });
   }
+
   const options = {
     method: "POST",
     url: `${BRIAN_BASE_URL}/transaction`,
@@ -21,29 +27,31 @@ export async function fetchTransactionFromPrompt(req: Request, res: Response) {
       "Content-Type": "application/json",
       "X-Brian-Api-Key": BRIAN_API_KEY,
     },
-    data: { prompt, address, chainId },
+    data: { prompt, address, chainId: chainId ?? "59144" }, // default to linea chainid
   };
+
   try {
     const { data } = await axios.request(options);
-    console.log(data);
+    // save transaction to db
+
+    const newTransaction: Transaction = {
+      id: uuid(),
+      metadata: data?.result[0],
+      txHash: null,
+    };
+    await saveTransaction(newTransaction);
+
     return res.status(200).json({
       status: "ok",
-      data: data.result,
+      data: newTransaction.metadata,
     });
   } catch (error) {
-    console.error(error);
-    if (error instanceof AxiosError) {
-      return res.status(error.response?.status || 500).json({
-        status: "nok",
-        error: {
-          message: error.response?.data.error,
-        },
-      });
-    }
+    const errorMessage = getErrorMessage(error);
+    logger.error(`Error fetching transaction from prompt: ${errorMessage}`);
     return res.status(500).json({
       status: "nok",
       error: {
-        message: "Internal server error",
+        message: errorMessage,
       },
     });
   }
