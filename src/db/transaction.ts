@@ -29,7 +29,7 @@ export const getTransactionById = async (transactionId: string) => {
       id: transactionId,
     },
   });
-  logger.info(`Get Transaction: ${result}`);
+  logger.info(`Get Transaction by Id: ${transactionId}`);
   return result;
 };
 
@@ -41,7 +41,7 @@ export const saveTransaction = async (transaction: Transaction) => {
       metadata: transaction.metadata as Prisma.JsonObject,
     },
   });
-  logger.info(`Save Transaction: ${result}`);
+  logger.info(`Save Transaction: ${transaction.id}`);
   return result;
 };
 
@@ -58,7 +58,7 @@ export const updateTransactionHash = async (
       txHash: txHash,
     },
   });
-  logger.info(`Update Transaction: ${result}`);
+  logger.info(`Update Transaction: ${transactionId} ${txHash}`);
   return result;
 };
 
@@ -69,6 +69,6 @@ export const deleteTransactionById = async (transactionId: string) => {
       id: transactionId,
     },
   });
-  logger.info(`Delete Transaction: ${result}`);
+  logger.info(`Delete Transaction: ${transactionId}`);
   return result;
 };
