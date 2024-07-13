@@ -6,7 +6,6 @@ import {
   updateTransaction,
   deleteTransaction,
 } from "./transaction.controller";
-import { getTransactionById } from "../../db/transaction";
 
 const txRouter = Router();
 
@@ -17,8 +16,8 @@ txRouter.get("/", getAllTransactions);
 txRouter.get("/address/:address", getAllTransactionsByAddress);
 
 // get transaction by uuid
-txRouter.get("/:uuid", getTransactionByTransactionId);
-txRouter.put("/:uuid", updateTransaction);
-txRouter.delete("/:uuid", deleteTransaction);
+txRouter.get("/:transactionId", getTransactionByTransactionId);
+txRouter.put("/:transactionId", updateTransaction);
+txRouter.delete("/:transactionId", deleteTransaction);
 
 export { txRouter };

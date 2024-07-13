@@ -79,7 +79,8 @@ export async function getTransactionByTransactionId(
 }
 
 export async function updateTransaction(req: Request, res: Response) {
-  const { transactionId, txHash } = req.body;
+  const { transactionId } = req.params;
+  const { txHash } = req.body;
   if (!transactionId || !txHash)
     return res.status(400).json({ message: "Wrong args" });
   try {
@@ -101,7 +102,7 @@ export async function updateTransaction(req: Request, res: Response) {
 }
 
 export async function deleteTransaction(req: Request, res: Response) {
-  const { transactionId } = req.body;
+  const { transactionId } = req.params;
   if (!transactionId) return res.status(400).json({ message: "Wrong args" });
   try {
     const data = await deleteTransactionById(transactionId);
