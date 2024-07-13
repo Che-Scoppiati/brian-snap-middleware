@@ -12,10 +12,7 @@ export const getTransactions = async () => {
 export const getTransactionsByUserAddress = async (address: string) => {
   const result = prisma.transaction.findMany({
     where: {
-      metadata: {
-        path: ["data", "fromAddress"], // path of the key fromAddress in the brian json
-        string_contains: address,
-      },
+      fromAddress: address,
     },
   });
   logger.info(`Get Transactions by User Address: ${address}`);
@@ -38,6 +35,7 @@ export const saveTransaction = async (transaction: Transaction) => {
   const result = prisma.transaction.create({
     data: {
       id: transaction.id,
+      fromAddress: transaction.fromAddress,
       metadata: transaction.metadata as Prisma.JsonObject,
     },
   });

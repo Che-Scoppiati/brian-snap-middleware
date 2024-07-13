@@ -15,7 +15,8 @@ datasource db {
 }
 
 model Transaction {
-    id       String  @id @default(cuid())
-    metadata Json
-    txHash   String?
+    id          String  @id @default(cuid())
+    metadata    Json
+    fromAddress String
+    txHash      String?
 }

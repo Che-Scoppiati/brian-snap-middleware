@@ -37,6 +37,7 @@ export async function fetchTransactionFromPrompt(req: Request, res: Response) {
     const newTransaction: Transaction = {
       id: uuid(),
       metadata: data?.result[0],
+      fromAddress: address,
       txHash: null,
     };
     await saveTransaction(newTransaction);
@@ -44,6 +45,7 @@ export async function fetchTransactionFromPrompt(req: Request, res: Response) {
     return res.status(200).json({
       status: "ok",
       id: newTransaction.id,
+      fromAddress: newTransaction.fromAddress,
       data: newTransaction.metadata,
     });
   } catch (error) {
