@@ -6,6 +6,7 @@ import { saveTransaction } from "../../db/transaction";
 import { v4 as uuid } from "uuid";
 import { Transaction } from "@prisma/client";
 import { getErrorMessage } from "../../lib/utils";
+import web3 from "web3";
 
 const BRIAN_BASE_URL = "https://api.brianknows.org/api/v0/agent";
 const BRIAN_API_KEY = env.BRIAN_API_KEY;
@@ -13,12 +14,16 @@ const BRIAN_API_KEY = env.BRIAN_API_KEY;
 const logger = new Logger("brian");
 
 export async function fetchTransactionFromPrompt(req: Request, res: Response) {
-  const { prompt, address, chainId } = req.body;
+  const { prompt, address } = req.body;
 
-  logger.log(`received prompt: ${prompt} and address: ${address}`);
+  logger.log(`received prompt: ${prompt}`);
+  logger.log(`received address: ${address}`);
+  // logger.log(`received chainId: ${chainId}`);
   if (!prompt || !address) {
     return res.status(400).json({ message: "Prompt and address are required" });
   }
+
+  const sanitizedAddress = web3.utils.toChecksumAddress(address);
 
   const options = {
     method: "POST",
@@ -27,7 +32,7 @@ export async function fetchTransactionFromPrompt(req: Request, res: Response) {
       "Content-Type": "application/json",
       "X-Brian-Api-Key": BRIAN_API_KEY,
     },
-    data: { prompt, address, chainId: chainId ?? "59144" }, // default to linea chainid
+    data: { prompt, address: sanitizedAddress, chainId: "1" },
   };
 
   try {
